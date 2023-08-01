@@ -1,0 +1,5 @@
+# Projeto | Project
+
+> Neste trabalho individual pretendia-se dar responda a um caso prático de trabalho em equipa, salientado características das equipas, os papéis dos seus interveninetes, os critérios para melhorar a eficácia desta equipa, obstáculos estão a dificultar a atuação da equipa e como podem ser ultrapassados, e ainda, que problemas da tomada de decisão ocorreram nesta equipa e o que poderia ser realizado para prevenir estes enviesamentos.
+
+> In this individual work, it was intended to respond to a practical case of teamwork, highlighting the characteristics of the teams, the roles of their intervenients, the criteria for improving the effectiveness of this team, obstacles that are hindering the team's performance and how they can be overcome , and also, which decision-making problems occurred in this team and what could be done to prevent these biases.

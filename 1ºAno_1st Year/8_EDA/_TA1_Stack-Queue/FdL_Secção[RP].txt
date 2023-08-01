@@ -1,0 +1,4 @@
+Daniela Monte Real ;20202020;RP;True
+Débora de Souza;110110110;RP;True
+Amilcar Santos;30303030;RP;False
+Gilberto Oliveira;80808080;RP;False

@@ -1,0 +1,28 @@
+clf;
+hold on;
+set(gca,'xtick',-1:2.0:10);
+set(gca,'ytick',-1:2.0:10);
+xlim ([-1 6]);
+ylim ([-1 10]);
+ax = gca;
+ax.XAxisLocation = 'origin';
+ax.YAxisLocation = 'origin';
+x = -16:0.01:8.5;
+y = x-log(x);
+plot(x,y, 'r', 'LineWidth', 2);
+plot(0,0, 'ok');
+y = x-log(x);
+plot(x,y, 'r', 'LineWidth', 2);
+txt = 'x';
+text(0.2,9,txt, 'FontSize', 14);
+txt = 'y';
+text(5.5,-0.5,txt, 'FontSize', 14);
+txt = 'x-log(x)';
+text(5, 3,txt, 'FontSize', 14);
+% AV --> x = 0
+y = -9:0.01:18;
+x = y*0;
+plot(x,y, 'b--', 'LineWidth', 1);
+txt = '\leftarrow  x = 0';
+text(0.1,7.5,txt);
+hold off;

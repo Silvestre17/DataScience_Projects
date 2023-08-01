@@ -1,0 +1,4 @@
+Albertina Silva;120120120;QC;True
+Ana Tereza Vasques ;40404040;QC;False
+Artur Silvestre;50505050;QC;False
+Diogo Morais;90909090;QC;False

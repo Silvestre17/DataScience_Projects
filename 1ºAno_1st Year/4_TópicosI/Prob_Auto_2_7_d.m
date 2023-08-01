@@ -1,0 +1,35 @@
+clf;
+hold on;
+set(gca,'xtick',-8:2.0:8);
+set(gca,'ytick',-4:2.0:2);
+xlim ([-9 9]);
+ylim ([-6 3]);
+ax = gca;
+ax.XAxisLocation = 'origin';
+ax.YAxisLocation = 'origin';
+x = -8.5:0.01:8.5;
+y = (x-2)./(x+1).^2;
+plot(x,y, 'r', 'LineWidth', 2);
+y = (x-2)./(x+1).^2;
+plot(x,y, 'r', 'LineWidth', 2);
+txt = 'x';
+text(8.2,-0.5,txt, 'FontSize', 14);
+txt = 'y';
+text(0.7,2.7,txt, 'FontSize', 14);
+txt = '(x-2) / (x+1)^2';
+text(5, 1,txt, 'FontSize', 14);
+% AH --> y = 0
+x = -9:0.01:9;
+y = x*0;
+plot(x,y, 'b--', 'LineWidth', 2);
+txt = 'y = 0';
+text(-5.3,0.5,txt);
+txt= '\downarrow';
+text(-5,0.3,txt);
+% AV --> x = -1
+y = -9:0.01:9;
+x = y*0-1;
+plot(x,y, 'b--', 'LineWidth', 2);
+txt = 'x = -1\rightarrow';
+text(-2.7,1.5,txt);
+hold off;

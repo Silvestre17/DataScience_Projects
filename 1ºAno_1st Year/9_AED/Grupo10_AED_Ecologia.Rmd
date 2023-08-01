@@ -1,0 +1,548 @@
+---
+title: "CASO PRÁTICO 10 | ECOLOGIA"
+date: "31 de março de 2022"
+author: André Silvestre Nº104532 | Diogo Catarino Nº104745 | Eduardo Silva Nº104943 | Francisco Gomes Nº104944
+output: html_document
+---
+
+```{=html}
+<style>
+
+h1.title {
+  font-size: 50px;
+  font-weight: bold;
+  text-align: center;
+}
+h4.author {
+  font-size: 18px;
+  font-family: "Arial", Times, sans-serif;
+  text-align: center;
+}
+h4.date { 
+  font-size: 15px;
+  font-family: "Arial", Times, serif;
+  text-align: center;
+}
+
+body {
+  text-align: justify}
+p {
+  font-size: 16px;
+  text-indent: 2em;
+  }
+</style>
+```
+![](https://www.iscte-iul.pt/assets/files/2020/06/03/1591193818854_rgb_espp_pt_vertical_main.png){width="25%"}
+
+##### **UC:** Análise Exploratória de Dados
+
+##### **Docentes:** Madalena Ramos e Luís Junqueira
+
+.
+
+# **RELATÓRIO**
+```{r Inicialização, include = FALSE}
+
+setwd("D:/Documents/OneDrive - ISCTE-IUL/3_Análise Exploratória de Dados/.._AED_Trabalho de Grupo/R")
+
+#install.packages("openxlsx")
+library(openxlsx)
+#install.packages("tidyverse")
+library("tidyverse")
+#install.packages("descr")
+library(descr)
+#install.packages("flextable")
+library(flextable)
+#install.packages("moments")
+library(moments)
+#install.packages("ggplot2")
+library(ggplot2)
+
+#1. Importar o ficheiro de Excel;
+bd<-read.xlsx("CP10_Ecologia_R_Jamovi.xlsx")
+colnames(bd)
+
+```
+
+## **Introdução**
+
+  A ecologia é uma vertente crucial do conhecimento no mundo atual tendo em conta um dos principais desafios do Homem de hoje: as alterações globais e a consequente perda de biodiversidade nos ecossistemas.
+  
+  Desta forma, é indubitável a necessidade de compreender aprofundadamente os principais processos ecológicos, das questões ligadas à perda e gestão da Biodiversidade, bem como da sua importância, incluindo as interações entre as diferentes componentes, bióticas e abióticas, dos próprios Ecossistemas.
+
+  Tendo em vista esta temática tão preponderante e, por vezes, tão desprezada, uma equipa de investigadores realizou um estudo, que incluiu a aplicação de um inquérito por questionário. Um dos módulos deste questionário tem como objetivo avaliar a importância atribuída a artigos do ambiente, perceção sobre a gravidade da realidade ambiental, bem como aferir o nível de preocupação com a destruição de recursos naturais. Os dados disponibilizados referem-se às respostas dos residentes em Portugal, relativamente às questões mencionadas e alguma informação de caracterização destes cidadãos.
+
+  Assim, pretende-se com este caso prático proposto no âmbito da Unidade Curricular de Análise Exploratória de Dados, desenvolver a preparação e organização do conjunto de dados e correspondente análise descritiva, em função do contexto e objetivos definidos, tendo como auxílio as ferramentas: Excel, Jamovi e R.
+
+  Primeiramente, faremos uma descrição do perfil social dos inquiridos; seguidamente, veremos o grau de importância para os problemas ambientais; posteriormente, analisaremos o nível de preocupação destes com a destruição de recursos naturais; e por fim, atentaremos em que medida a educação influencia a sua perspetiva em relação ao ambiente.
+
+------------------------------------------------------------------------
+
+```{r Variáveis, include = FALSE}
+# 2. Mudar o nome de duas variáveis;
+colnames(bd)
+
+names(bd)[7]<-c("Nível.de.preocupação.com.a.destruição.de.recursos.naturais")
+names(bd)[9]<-c("Sexo.Texto")
+names(bd)[12]<-c("Estado.Civil.Texto")
+names(bd)[15]<-c("Habilitações.Literárias.Texto")
+
+```
+
+
+```{r Tarefas, include= FALSE}
+
+# 3. Identificar os valores omissos de uma variável
+colnames(bd)
+# Verificamos que a variável "Nível.de.preocupação.com.a.destruição.de.recursos.naturais" está na posição 7
+
+NAs <- bd$ID[which(is.na(bd$Nível.de.preocupação.com.a.destruição.de.recursos.naturais=="NA"))]
+NAs
+
+# 4. Imputar os valores omissos de uma variável com a mediana os seus valores;
+mediana <- median(bd$Nível.de.preocupação.com.a.destruição.de.recursos.naturais,na.rm=TRUE)
+mediana
+
+summary(bd[7]) # verifica-se que é 86.5
+
+bd$Nível.de.preocupação.com.a.destruição.de.recursos.naturais[which(is.na(bd[7])==TRUE)]<- mediana
+
+NAs <- (which(is.na(bd[7])==TRUE))
+NAs
+
+```
+
+.
+
+## **1. Caracterização Social dos Inquiridos**
+.
+
+  Através da análise dos dados, verifica-se que a amostra em estudo é composta por 696 inquiridos.
+
+.
+
+<center> __Gráfico da Relação da Idade com o Género dos inquiridos  __ </center>
+
+```{r, fig.align='center', echo=FALSE}
+
+# ======================== Sexo | Idade ========================
+bd_violin <- filter(bd, !is.na(bd$Sexo.Texto))
+
+p<-ggplot(bd_violin, aes(x=Sexo.Texto, y=Idade, fill=Sexo.Texto)) +  geom_violin(trim=FALSE, color="grey")+ geom_boxplot(width=0.15,  position=position_dodge(1), fill = "white") + theme_minimal()+ xlab("Género") + ylab("Idade")+  scale_fill_manual(values = c("#ffa6c9", "#a1caf1"))
+p + guides(fill=guide_legend(title="Género"))
+```
+
+<center>**Gráfico 1 -** Relação da Idade com o Género dos inquiridos. </center>
+.
+
+  Pela análise do **Gráfico 1**, ainda que se verifique dispersão entre as idades, conclui-se que 50% dos inquiridos do género feminino têm uma idade inferior a, aproximadamente, 34 anos e 50% dos inquiridos do género masculino têm uma idade inferior a 38 anos. Constata-se ainda que, em ambos os géneros, a faixa etária com maior concentração de indivíduos é de 18 a 26 anos.
+
+.
+
+<center> __Tabela de Medidas Descritivas do Género dos Inquiridos __ </center>
+
+```{r, fig.align='center', echo=FALSE}
+
+# ======================================= IDADE =======================================
+# Medidas Descritivas
+n <- length(bd$Idade)
+media <- round(mean(bd$Idade,na.rm=TRUE),1)
+mediana <- median(bd$Idade,na.rm=TRUE)
+desvpadr <- round(sd(bd$Idade, na.rm=TRUE),1)
+varianc <- round(var(bd$Idade, na.rm=TRUE),1)
+minimo <- min(bd$Idade, na.rm=TRUE)
+maximo <- max(bd$Idade, na.rm=TRUE)
+firstqt <- round(quantile(bd$Idade, 0.25, na.rm=TRUE),1)
+thirdqt <- round(quantile(bd$Idade, 0.75, na.rm=TRUE), 1)
+
+# Construção da Tabela
+Valor <- c(n, media,mediana,  desvpadr, varianc, minimo, maximo, firstqt, thirdqt)
+Medidas <- c("n", "Média", "Mediana", "Desvio Padrão", "Variância", "Mínimo", "Máximo", "1º Quartil", "3º Quartil")
+table <- data.frame(Medidas,Valor)
+
+ftable_1 <- flextable(table)
+
+ftable_1 <- bg(ftable_1, bg = "#ffc40c", part = "header")
+ftable_1 <- color(ftable_1, color = "white", part = "header")
+ftable_1 <- bold(ftable_1, bold=TRUE, part="header")
+ftable_1 <- set_header_labels(ftable_1, Medidas= 'Medidas Descritivas',Valor = 'Valor')
+ftable_1 <- autofit(ftable_1)
+ftable_1
+
+```
+
+<center>**Tabela 1 -** Medidas Descritivas do Género dos Inquiridos </center>
+
+.
+
+  Analisando descritivamente a idade dos inquiridos verifica-se que esta varia entre os 18 e os 83 anos, sendo a média `r media`  anos (DP = `r desvpadr`).  (**Tabela 1**)
+
+  É de salientar ainda que através da análise simultânea da **Tabela 1** e **Gráfico 1** constata-se que a maior parte dos inquiridos são de faixas etárias jovens, o que corrobora o 1º quartil. Revela, ainda, que de toda a amostra em estudo, 25% tem no máximo 24 anos, sendo que a idade máxima dos inquiridos é 83 anos.
+
+.
+
+<center> __Tabela de Frequências das Habilitações Literárias __ </center>
+
+```{r, fig.align='center', echo=FALSE}
+# ======================== Habilitações Literarias (n,%) ========================
+
+Habilitacoes_Literarias <- c("Primário", "Secundário", "Superior")
+habilitacoes_tab <- table(bd$Habilitações.literárias)
+habilitacoes_p <- round((prop.table(habilitacoes_tab)*100),1)
+
+prim_n <- as.numeric(habilitacoes_tab[1])
+sec_n <- as.numeric(habilitacoes_tab[2])
+sup_n <- as.numeric(habilitacoes_tab[3])
+prim_p <- as.numeric(habilitacoes_p[1])
+sec_p <- as.numeric(habilitacoes_p[2])
+sup_p <- as.numeric(habilitacoes_p[3])
+Escolaridade <- c('Primário','Secundário','Superior')
+n <- c(prim_n,sec_n,sup_n)
+Percentagem <- c(prim_p,sec_p,sup_p)
+tableHab <- data.frame(Escolaridade,n,Percentagem)
+ftable_2 <- flextable(head(tableHab))
+
+ftable_2 <- bg(ftable_2, bg = "#ffc40c", part = "header")
+ftable_2 <- color(ftable_2, color = "white", part = "header")
+ftable_2 <- bold(ftable_2, bold=TRUE, part="header")
+ftable_2 <- set_header_labels(ftable_2,Escolaridade = 'Habilitações Literarias',n = 'n',Percentagem = '%')
+ftable_2 <- autofit(ftable_2)
+ftable_2
+```
+
+<center>**Tabela 2 -** Frequências das Habilitações Literárias. </center>
+
+.
+
+  A **Tabela 2** é representativa da distribuição das Habilitações Literárias dos inquiridos. Podemos verificar que 37,9% possuem apenas o ensino primário, sendo o grupo dominante. Com menos 1 ponto percentual, representa-se o grupo que possui o ensino secundário, ao passo que o ensino superior, representa apenas 25,1% da amostra.
+
+.
+
+<center> __Tabela de Frequências do Estado Civil__ </center>
+
+```{r, fig.align='center', echo=FALSE}
+# ======================== Estado Civil (n,%) ========================
+
+Estado_civil_tab<-table(bd$Estado.civil)
+
+Estado_civil_p<-round((prop.table(Estado_civil_tab)*100),1)
+
+solteiro_n<-as.numeric(Estado_civil_tab[1])
+casado_n<-as.numeric(Estado_civil_tab[2])
+separado_n<-as.numeric(Estado_civil_tab[3])
+viuvo_n<-as.numeric(Estado_civil_tab[4])
+solteiro_p<-as.numeric(Estado_civil_p[1])
+casado_p<-as.numeric(Estado_civil_p[2])
+separado_p<-as.numeric(Estado_civil_p[3])
+viuvo_p<-as.numeric(Estado_civil_p[4])
+
+Estado_civil<-c("Solteiro", "Casado", "Separado", "Viúvo")
+n <- c(solteiro_n,casado_n,separado_n,viuvo_n)
+p <- c(solteiro_p,casado_p,separado_p,viuvo_p)
+p_a <- c(solteiro_p, solteiro_p + casado_p, solteiro_p + casado_p+ separado_p, solteiro_p + casado_p + separado_p + viuvo_p)
+table_estado_civil <- data.frame(Estado_civil,n,p,p_a)
+
+ftable_3 <- flextable(head(table_estado_civil))
+
+ftable_3 <- bg(ftable_3, bg = "#ffc40c", part = "header")
+ftable_3 <- color(ftable_3, color = "white", part = "header")
+ftable_3 <- bold(ftable_3, bold=TRUE, part="header")
+ftable_3 <- set_header_labels(ftable_3,Estado_civil = 'Estado Civil',n = 'n',p = '%', p_a = '% acumulada')
+ftable_3 <- autofit(ftable_3)
+ftable_3
+
+```
+
+<center>**Tabela 3 - **Frequências do Estado Civil.</center>
+
+.
+
+  Relativamente ao Estado Civil (**Tabela 3**), dos 696 inquiridos, obtiveram-se 19 não respostas, o que se traduz numa taxa aproximada de 2,7% de abstenção. O estado civil que melhor caracteriza a amostra é o de "casado", com 55,2% do total de respostas. 
+  
+  O estado de solteiro, com uma percentagem acumulada de 92,7% (aliada aos casados) é o segundo maior estado civil presente nas respostas. Com menor significância, seguem-se o estado de separado (5%) e o de viúvo (2.2%).  (**Tabela 3**)
+
+.
+
+------------------------------------------------------------------------
+
+## **2. Grau de Importância de Problemas Ambientais**
+
+.
+
+  O principal objetivo de investigação que pretendemos desenvolver neste trabalho é perceber de que forma o perfil de um indivíduo se pode relacionar com as suas perceções em relação à ecologia e ao meio ambiente. Neste sentido apresentamos de seguida diversos gráficos e tabelas que pretendem dar resposta a esta questão.
+  
+  De modo a compreender a opinião da amostra em estudo relativamente ao grau de importância que têm os problemas ambientais, foi solicitado aos inquiridos que classificassem de 1 ("Nada Importante") a 5 ("Muito Importante") três problemas ambientais que predominam na atualidade.
+
+  * Poluição nas Praias
+  *	Má Qualidade do Ar que Respiramos 
+  *	Utilização de Pesticidas na Agricultura
+
+.
+
+<center> __Gráfico de Barras de Problemas Ambientais__ </center>
+
+```{r, fig.align='center', echo=FALSE }
+respostas <- unique(bd$Poluição.nas.praias)
+
+bd$Poluição.nas.praias[bd$Poluição.nas.praias=="Nada importante"]<- 1
+bd$Poluição.nas.praias[bd$Poluição.nas.praias=="Muito importante"]<-5
+
+bd$Má.qualidade.do.ar.que.respiramos[bd$Má.qualidade.do.ar.que.respiramos=="Nada importante"]<- 1
+bd$Má.qualidade.do.ar.que.respiramos[bd$Má.qualidade.do.ar.que.respiramos=="Muito importante"]<-5
+
+bd$Utilização.de.pesticidas.na.agricultura[bd$Utilização.de.pesticidas.na.agricultura=="Nada importante"]<- 1
+bd$Utilização.de.pesticidas.na.agricultura[bd$Utilização.de.pesticidas.na.agricultura=="Muito importante"]<-5
+
+
+Poluição <- table(bd$Poluição.nas.praias)
+Poluição_p <- round((prop.table(Poluição)*100),1)
+
+Qualidade <- table(bd$Má.qualidade.do.ar.que.respiramos)
+Qualidade_p <- round((prop.table(Qualidade)*100),1)
+
+Pesticidas <- table(bd$Utilização.de.pesticidas.na.agricultura)
+Pesticidas_p <- round((prop.table(Pesticidas)*100),1)
+
+nomes <- c("Nada Importante (1)","2","3","4","Muito Importante (5)")
+
+df <- data.frame(nomes, "Poluição nas Praias" = unique(Poluição_p), "Má Qualidade do Ar que Respiramos" = unique(Qualidade_p), "Utilização de Pesticidas na Agricultura" = unique(Pesticidas_p) )
+
+b <- barplot(t(as.matrix(df[, 2:4])), 
+        beside = TRUE,
+        names.arg = df$nomes,
+        ylim = c(0,50),
+        col = c("#ffdf00", "orange", "red"),
+        legend.text = TRUE,
+        ylab = "%",
+        xlab = "Grau de Importância",
+        args.legend = list(x = "topleft", bty = "n", inset=c(0, -0.1)),
+        )
+```
+
+<center>**Gráfico 2 - **Gráfico relativo ao grau de importância dos três problemas ecológicos em estudo, segundo os inquiridos.</center>
+
+.
+
+  Após o estudo do **Gráfico 2**, conclui-se que há um número relativamente reduzido de inquiridos que consideram estes três problemas "Nada importantes (1)". Todavia, a "Má qualidade do ar que respiramos" é o problema ecológico considerado por mais inquiridos como "Muito importante" (49.5%).
+  
+  No geral, a amostra considera estes problemas ecológicos relevantes, visto que a generalidade das respostas encontram-se entre o "3" e o "Muito importante (5)". 
+  
+  O facto de a "Má qualidade do Ar que Respiramos" ser a problemática mais importante para a amostra em estudo já era de esperar, uma vez que este problema é, entre todos os problemas em estudo, aquele que afeta diretamente todos os inquiridos. 
+  
+  Pelo contrário, a "Poluição nas Praias" e "Utilização de Pesticidas na Agricultura" são problemáticas que, dependo da região em que o individuo se insere, podem ser mais ou menos relevantes consoante a influência que se faz sentir no mesmo. 
+  
+  Perante a possível variedade regional dos inquiridos é de enfatizar que das 3 problemáticas questionadas, aquela que obteve um maior número de não respostas (5% dos inquiridos) foi o problema inerentes à "Utilização de Pesticidas na Agricultura", podendo ser indício de uma desinformação ou desinteresse da população para problemas deste tipo.
+  
+  Tendo por base o referido anteriormente, podemos concluir que existe na atualidade uma elevada consciencialização para as problemáticas associadas à Ecologia.
+
+.
+
+------------------------------------------------------------------------
+
+## **3. Nível de Preocupação dos Inquiridos com a Destruição de Recursos Naturais**
+
+.
+
+  No seguimento da análise do interesse da população perante a Ecologia, foi pedido aos inquiridos que numa escala de 0 a 100 avaliassem o seu nível de preocupação perante a destruição de Recursos Naturais.
+
+  No **Gráfico 3** e **Tabela 4** estão representadas as respostas a esta questão.
+
+.
+
+<center> __Tabela de Medidas Descritivas do Nível de Preocupação com a Destruição de Recursos Naturais __ </center>
+
+```{r, fig.align='center', echo=FALSE }
+# ============ NÍVEL DE PREOCUPAÇÃO COM A DESTRUIÇÃO DE RECURSOS NATURAIS  ============
+# Medidas Descritivas
+n <- length(bd$Nível.de.preocupação.com.a.destruição.de.recursos.naturais)
+media <- round(mean(bd$Nível.de.preocupação.com.a.destruição.de.recursos.naturais,na.rm=TRUE),1)
+mediana <- median(bd$Nível.de.preocupação.com.a.destruição.de.recursos.naturais,na.rm=TRUE)
+desvpadr <- round(sd(bd$Nível.de.preocupação.com.a.destruição.de.recursos.naturais, na.rm=TRUE),1)
+varianc <- round(var(bd$Nível.de.preocupação.com.a.destruição.de.recursos.naturais, na.rm=TRUE),1)
+minimo <- min(bd$Nível.de.preocupação.com.a.destruição.de.recursos.naturais, na.rm=TRUE)
+maximo <- max(bd$Nível.de.preocupação.com.a.destruição.de.recursos.naturais, na.rm=TRUE)
+firstqt <- round(quantile(bd$Nível.de.preocupação.com.a.destruição.de.recursos.naturais, 0.25, na.rm=TRUE),1)
+thirdqt <- round(quantile(bd$Nível.de.preocupação.com.a.destruição.de.recursos.naturais, 0.75, na.rm=TRUE), 1)
+
+# Construção da Tabela
+Valor <- c(n, media,mediana,  desvpadr, varianc, minimo, maximo, firstqt, thirdqt)
+Medidas <- c("n", "Média", "Mediana", "Desvio Padrão", "Variância", "Mínimo", "Máximo", "1º Quartil", "3º Quartil")
+table <- data.frame(Medidas,Valor)
+
+ftable_4 <- flextable(table)
+
+ftable_4 <- bg(ftable_4, bg = "#ffc40c", part = "header")
+ftable_4 <- color(ftable_4, color = "white", part = "header")
+ftable_4 <- bold(ftable_4, bold=TRUE, part="header")
+ftable_4 <- set_header_labels(ftable_4, Medidas= 'Medidas Descritivas',Valor = 'Valor')
+ftable_4 <- autofit(ftable_4)
+ftable_4
+
+
+```
+
+<center>**Tabela 4 -** Medidas Descritivas do Nível de Preocupação com a Destruição de Recursos Naturais. </center>
+
+.
+
+<center> __Gráfico do Nível de Preocupação com a Destruição de Recursos Naturais em relação à Idade e às Habilitações Literárias__ </center>
+
+.
+
+```{r, fig.align='center', echo=FALSE}
+
+Habilitações.Literárias <- as.factor(bd$Habilitações.literárias)
+
+ggplot(bd, aes(x =Idade, y=Nível.de.preocupação.com.a.destruição.de.recursos.naturais, col = Habilitações.Literárias)) + geom_point( size = 2) +
+  xlab("Idade") + 
+  xlim (18,83) + ylim(0,100) +
+  ylab("Nível de Preocupação com a Destruição de Recursos Naturais") +   
+  scale_color_manual(labels = c("Primário", "Secundário", "Superior"),
+                     values = c("#9400d3", "#3ab09e", "#ffd700"))+
+  theme_minimal()
+
+```
+
+.
+
+<center> **Gráfico 3 -** Relação entre Nível de Preocupação com a Destruição de Recursos Naturais, a Idade e as Habilitações Literárias. </center>
+
+.
+
+
+  Relativamente ao "Nível de Preocupação com a Destruição de Recursos Naturais" as respostas dos inquiridos estão compreendidas entre 20 e 100, sendo que média é de `r media` (DP = `r desvpadr`). Enfatiza-se ainda que sendo a escala até 100, 75% da amostra respondeu, no máximo, 97. (**Tabela 4**)
+
+  Segundo o **Gráfico 3**, a maior incidência de respostas encontra-se num nível de preocupação com a destruição de recursos naturais superior a 65, independentemente das habilitações literárias e da idade, o que revela uma generalização do conhecimento deste problema a todos os indivíduos. 
+
+  Um dos factos a salientar da análise do **Gráfico 3** é que não se obtiveram respostas de preocupação abaixo de 65 por parte dos indivíduos com o ensino superior.
+
+  É de notar que a maior concentração de respostas reside entre os jovens (< 26 anos), aspeto este que é corroborado com o facto de os inquiridos serem maioritariamente desta faixa etária.
+
+  Em relação às habilitações literárias observa-se que há uma distribuição homogênea ao longo das idades, sendo que, por isso, ambas as variáveis não apresentam nenhuma relação linear com a preocupação dos inquiridos perante os recursos naturais.
+
+
+```{r include=FALSE}
+# Medidas de Associação e Correlação (bivariadas) 
+
+#install.packages("ggpubr")
+library("ggpubr")
+
+# R de Pearson
+Pearson <- cor(x = bd$Nível.de.preocupação.com.a.destruição.de.recursos.naturais, y = bd$Idade,  method = "pearson", use = "complete.obs")
+
+Pearson <- round(Pearson, 3)
+Pearson
+
+# Ró de Spearman
+Rho_1 <-cor.test(bd$Habilitações.literárias, bd$Nível.de.preocupação.com.a.destruição.de.recursos.naturais,  method = "spearman")
+
+Rho_1 <- round(Rho_1$estimate, 3)
+Rho_1
+
+```
+
+  Esta inexistência de relação é sustentada nas medidas de associação e correlação bivariadas pelo _R de Pearson_ entre o "Nível de Preocupação com a Destruição de Recursos Naturais" e a "Idade" onde se obteve um coeficiente de **`r Pearson`**, o que nos permite afirmar a ausência de relação. 
+  
+  O _Ró de Spearman_ entre o "Nível de Preocupação com a Destruição de Recursos Naturais" e as "Habilitações Literárias", obteve um coeficiente de **`r Rho_1`** . Desta forma, podemos finalmente concluir que não se estabelece nenhuma relação linear entre estas variáveis.
+
+  Em suma, a preocupação dos inquiridos é independente do seu perfil, tal como já visível, havendo uma elevada sensibilização para os problemas associados à Ecologia
+
+
+------------------------------------------------------------------------
+
+## **4. Influência da Educação na Perspetiva dos Inquiridos em Relação ao Ambiente **
+
+.
+
+  A fim de perceber como é que a amostra em estudo constata a situação a Nível Nacional e Mundial dos problemas ecológicos, foi pedido aos inquiridos que classificassem a atual situação numa escala de 1 ("Muito Boa") a 5 ("Muito Grave").
+
+.
+
+<center> __Gráficos das relações entre as Habilitações Literárias dos inquiridos com a Preocupação destes com Situação do Ambiente a Nível Nacional e Mundial__ </center>
+
+<p align="center">
+![](4NN.PNG){width="600"} 
+![](4NM.PNG){width="600"}
+</p>
+
+.
+
+<center>**Gráfico 4 e 5 -** Relações entre as Habilitações Literárias dos inquiridos com a Preocupação destes com Situação do Ambiente a Nível Nacional. </center>
+
+---
+
+<center> __Tabelas de Cruzamentos entre as Habilitações Literárias dos inquiridos com a Preocupação destes com a Situação do Ambiente a Nivel Nacional e Mundial__ </center>
+.
+
+<p align="center">
+![](4NN_TC.PNG){width="850"}
+</p>
+
+.
+
+.
+
+<p align="center">
+![](4NM_TC.PNG){width="680"}
+</p>
+.
+
+<center>**Tabela 5 e 6 -** Relações entre as Habilitações Literárias dos inquiridos com a Preocupação destes com Situação do Ambiente a Nível Nacional. </center>
+
+.
+
+  Segundo o **Gráfico 4**, do total dos inquiridos com o ensino Superior, 43% classificam a situação do ambiente a nível nacional como "Muito grave" e 42% como "Grave". 
+        
+  Da amostra, 61% dos que concluíram o ensino primário e 52% dos que completaram o ensino Secundário, classificam o problema como "Grave". No entanto, a situação apenas foi classificado como "Muito boa" por 2% das pessoas com o Secundário. 
+  
+  Mediante a análise do **Gráfico 5**, com uma taxa de não respostas próxima de 8% para o ensino Secundário e 5% para o ensino Primário, a maioria das respostas considerou como "Muito grave" e "Grave" a situação do ambiente a nível mundial, independentemente do grau de escolaridade. De salientar os 53,7% dos inquiridos com ensino superior e os 52,3% dos que possuem o ensino Primário que optaram pela opção do "Muito grave".
+  
+  Salienta-se ainda o facto de não haver respostas, por pessoas com o ensino Primário, a mencionar que a situação se revela com "Pouca Gravidade". Pode-se ainda observar que 53,3% das respostas por parte de alunos com o ensino Secundário consideraram como "Grave" à situação ambiental a nível mundial e que nenhum dos inquiridos a classificou como "Muito boa", mesmo havendo essa opção no inquérito. (**Gráfico 5**)
+  
+  Os inquiridos apresentam um nível de preocupação mais elevado referente à atual situação a nível mundial, onde a percentagem de respostas "Muito Grave" (46,4%) é superior, comparativamente, àquela que é vivenciada a nível nacional (20,4%). (**Tabela 5 e 6**)
+  
+  Tal relação é mais expressiva nos indivíduos com o ensino Primário e Secundário, uma vez que cerca de 13% de cada um dos graus de escolaridade ter classificado como "Muito grave" a nível nacional, mas a nível mundial essa mesma classificação foi dada por 52% dos que realizaram o ensino Primário e 35% dos que realizaram o ensino Secundário.  (**Tabelas 5 e 6**)
+
+  Face a estes dados, conclui-se que as pessoas, independentemente do tipo de habilitações literárias que possuem, são sensibilizadas para este tipo de problemas ecológicos que afetam direta ou indiretamente estes mesmos indivíduos.
+
+.
+
+## **Conclusão**
+
+.
+
+  Os problemas ecológicos são iminentes na atualidade e foi na base destes que uma equipa de investigadores realizou uma recolha de dados que deu origem a este estudo.
+
+  Relativamente à amostra, verifica-se que há uma elevada heterogeneidade dos inquiridos, uma vez que, estes apresentam perfis demográficos distintos e variados, permitindo relacionar imparcialmente a relação entre estes e a Ecologia.
+
+  Conclui-se que os inquiridos classificam a situação ambiental a nível mundial com um grau de preocupação mais elevado do que a nível nacional, ou seja, classificam a situação em Portugal com menos problemas ambientais, relativamente com o mundo.
+
+  Em consonância com o referido no decorrer deste trabalho, é possível verificar ainda que não existe relação entre o nível de preocupação com a destruição de recursos naturais com a idade e com as habilitações literárias, sendo esta afirmação sustentada através do método "R de Pearson" e "Ró de Spearman", respetivamente.
+
+  Relativamente ao dataset que nos foi facultado, acreditamos que um dos aspetos que beneficiaria a análise dos dados seria a presença de uma variável que indicasse a região dos inquiridos uma vez que se verificou poder existir uma relação com as distintas importâncias atribuídas aos problemas ambientais.
+
+  Em suma, através deste estudo acerca da Ecologia é evidente que o perfil social de um indivíduo em nada influência as suas perceções em relação à ecologia e aos problemas associados.
+
+.
+
+------------------------------------------------------------------------
+
+.
+
+### **Bibliografia**
+
+-   [Ecologia](https://pt.wikipedia.org/wiki/Ecologia)
+
+-   [R Markdown](http://rmarkdown.rstudio.com)
+
+-   [Ciência de Dados com R - Introdução](http://sillasgonzaga.com/material/cdr/)
+
+-   [R Markdown Cookbook](https://bookdown.org/yihui/rmarkdown-cookbook/)
+
+-   [Medidas de Associação e Correlação (Bivariadas) em R](http://www.sthda.com/english/wiki/correlation-test-between-two-variables-in-r)
+
+-   [Códigos de Cor](https://html-color.codes/gold)
+
+-   [ISCTE-IUL](https://www.iscte-iul.pt)
+
+-   Material fornecido pelos docentes

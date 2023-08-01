@@ -1,0 +1,4 @@
+Joana Silva;60606060;RC;True
+Gustavo Pedro;100100100;RC;True
+Afonso Guimarães;10101010;RC;False
+Isabel Gomes ;70707070;RC;False
