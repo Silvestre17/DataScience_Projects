@@ -11,7 +11,6 @@
   - **PC** | Pensamento Crítico / Critical Thinking
   - **ETTC** |Escrita de Textos Técnicos e Científicos / Writing Scientific and Technical Texts
 
-
 ## 2º Semestre /  2nd Semester
 
 - **EDA** | Estruturas de Dados e Algoritmos / Data Structures and Algorithms [Pyhton]
